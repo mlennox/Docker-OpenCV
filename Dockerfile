@@ -26,7 +26,6 @@ RUN apt-get update && \
 		libgtk2.0-dev \
 		libatlas-base-dev gfortran \
 		tesseract-ocr tesseract-ocr-eng libtesseract-dev libleptonica-dev
-		# libleptonica-dev tesseract-ocr
 
 RUN cd /opt/ && \
 	git clone https://github.com/Itseez/opencv.git && \
@@ -53,7 +52,7 @@ RUN mkdir -p /opt/opencv/build && \
 # 	cd /root/.virtualenvs/cv/lib/python3.4/site-packages/ && \
 # 	ln -s ${OPENCVBINDING} cv2.so
 
-# now clean up the unwanted source
+# now clean up the unwanted source to keep image size to a minimum
 RUN cd /opt && \
 	rm -rf /opt/opencv && \
 	rm -rf /opt/opencv_contrib && \
