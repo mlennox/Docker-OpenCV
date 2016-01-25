@@ -10,8 +10,8 @@ ENV OPENCV_VERSION 3.1.0
 
 RUN apt-get update && \
 	apt-get -y -f install \
-		python3.4-dev 
-		wget \
+		python3.4-dev \
+		wget && \
 	wget https://bootstrap.pypa.io/get-pip.py && \
 	python3 get-pip.py 
 
