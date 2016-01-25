@@ -10,29 +10,29 @@ ENV OPENCV_VERSION 3.1.0
 
 RUN apt-get update && \
 	apt-get -y -f install \
-		python3 \
-		python3.4-dev \
-		wget && \
-	wget https://bootstrap.pypa.io/get-pip.py && \
-	python3 get-pip.py 
-
-# install OpenCV 3 =======================
-RUN pip install numpy && \
-	pip3 install numpy
-
-# prepare Python
-RUN apt-get -y -f install \
 		build-essential \
+		cmake \
+		git \
 		libssl-dev \
 		openssl \
-		cmake git pkg-config \
+		pkg-config \
+		python3 \
+		python3.4-dev \
+		wget \
+		# image manipulation libs
 		# libtiff4-dev not available in Debian use libtiff5-dev instead?
 		# libjpeg8-dev not available on Debian jessie, use libjpeg62-turbo-dev instead?
 		libjpeg62-turbo-dev libtiff5-dev libjasper-dev libpng12-dev \
 		libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
 		libgtk2.0-dev \
 		libatlas-base-dev gfortran \
+		# OCR libs
 		tesseract-ocr tesseract-ocr-eng libtesseract-dev libleptonica-dev
+
+RUN wget https://bootstrap.pypa.io/get-pip.py && \
+	python3 get-pip.py && \
+	pip install numpy && \
+	pip3 install numpy
 
 RUN cd /opt/ && \
 	git clone https://github.com/Itseez/opencv.git && \
