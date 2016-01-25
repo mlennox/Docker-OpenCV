@@ -7,14 +7,20 @@ RUN CPUCOUNT=$(cat /proc/cpuinfo | grep '^processor.*:' | wc -l)
 
 ENV OPENCV_VERSION 3.1.0
 
+
+RUN apt-get update && \
+	apt-get -y -f install \
+		python3.4-dev 
+		wget \
+	wget https://bootstrap.pypa.io/get-pip.py && \
+	python3 get-pip.py 
+
 # install OpenCV 3 =======================
 RUN pip install numpy && \
 	pip3 install numpy
 
 # prepare Python
-RUN apt-get update && \
-	apt-get -y -f install \
-		python3.4-dev \
+RUN apt-get -y -f install \
 		build-essential \
 		libssl-dev \
 		openssl \
