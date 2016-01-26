@@ -7,6 +7,8 @@ RUN CPUCOUNT=$(cat /proc/cpuinfo | grep '^processor.*:' | wc -l)
 
 ENV OPENCV_VERSION 3.1.0
 
+ADD aiwplain1.jpg /opt/aiwplain1.jpg
+ADD ocr1.py /opt/ocr1.py
 
 RUN apt-get update && \
 	apt-get -y -f install \
