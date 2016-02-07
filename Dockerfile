@@ -69,8 +69,7 @@ RUN mkdir -p /opt/opencv/build && \
 		# -D BUILD_EXAMPLES=ON \
 		.. && \
 	make -j${CPUCOUNT} && \
-	make install && \
-	ldconfig
+	make install
 
 # now clean up the unwanted source to keep image size to a minimum
 # RUN cd /opt && \
