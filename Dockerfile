@@ -8,6 +8,11 @@ RUN CPUCOUNT=$(cat /proc/cpuinfo | grep '^processor.*:' | wc -l)
 
 ENV OPENCV_VERSION 3.1.0
 
+# using CLang for build 
+# https://github.com/Itseez/opencv/issues/5004
+ENV CC /usr/local/clang
+ENV CXX /usr/local/clang++
+
 ADD aiwplain1.jpg /opt/aiwplain1.jpg
 ADD ocr1.py /opt/ocr1.py
 
@@ -22,18 +27,21 @@ RUN echo "http://dl-1.alpinelinux.org/alpine/v3.3/main" >> /etc/apk/repositories
 	echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
 	echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
-	
-
-
 RUN apk update && \
 	apk upgrade && \
 	apk add \
 		build-base \
+		clang \
 		cmake \
 		git \
 		libssl1.0 \
 		linux-headers \
 		openssl \
+		py-pip \
+		py-numpy \
+		py-numpy-dev \
+		py-scipy \
+		py-scipy-dev \
 		python3 \
 		python3-dev \
 		wget \
@@ -44,43 +52,9 @@ RUN apk update && \
 		openblas-dev openblas gfortran \
 		tesseract-ocr tesseract-ocr-dev leptonica leptonica-dev
 
-
-
-# RUN apt-get update && \
-# 	apt-get -y -f install \
-# 		build-essential \
-# 		cmake \
-# 		git \
-# 		libssl-dev \
-# 		openssl \
-# 		pkg-config \
-# 		python3 \
-# 		python3.4-dev \
-# 		wget \
-# 		# image manipulation libs
-# 		# libtiff4-dev not available in Debian use libtiff5-dev instead?
-# 		# libjpeg8-dev not available on Debian jessie, use libjpeg62-turbo-dev instead?
-# 		libjpeg62-turbo-dev libtiff5-dev libjasper-dev libpng12-dev \
-# 		libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
-# 		libgtk2.0-dev \
-# 		libatlas-base-dev gfortran \
-# 		# OCR libs
-# 		tesseract-ocr tesseract-ocr-eng libtesseract-dev libleptonica-dev
-
-RUN wget https://bootstrap.pypa.io/get-pip.py && \
-	python3 get-pip.py && \
-	# && \
-	# pip install numpy && \
-	# pip3 install numpy
- 	apk add py-numpy
-
 RUN cd /opt/ && \
-	git clone https://github.com/Itseez/opencv.git && \
-	git clone https://github.com/Itseez/opencv_contrib.git && \
-	cd opencv && \
-	git checkout ${OPENCV_VERSION} && \
-	cd ../opencv_contrib && \
-	git checkout ${OPENCV_VERSION}
+	git clone -b ${OPENCV_VERSION} --depth 1 https://github.com/Itseez/opencv.git && \
+	git clone -b ${OPENCV_VERSION} --depth 1 https://github.com/Itseez/opencv_contrib.git
 
 RUN mkdir -p /opt/opencv/build && \
 	cd /opt/opencv/build && \
@@ -94,11 +68,7 @@ RUN mkdir -p /opt/opencv/build && \
 	make -j${CPUCOUNT} && \
 	make install && \
 	ldconfig
-
-# RUN OPENCVBINDING=$(ls /usr/local/lib/python3.4/site-packages/cv2.cpython*.*) && \
-# 	cd /root/.virtualenvs/cv/lib/python3.4/site-packages/ && \
-# 	ln -s ${OPENCVBINDING} cv2.so
-
+	
 # now clean up the unwanted source to keep image size to a minimum
 # RUN cd /opt && \
 # 	rm -rf /opt/opencv && \
