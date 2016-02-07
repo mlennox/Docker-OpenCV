@@ -8,10 +8,7 @@ RUN CPUCOUNT=$(cat /proc/cpuinfo | grep '^processor.*:' | wc -l)
 
 ENV OPENCV_VERSION 3.1.0
 
-# using CLang for build 
-# https://github.com/Itseez/opencv/issues/5004
-ENV CC /usr/local/clang
-ENV CXX /usr/local/clang++
+
 
 ADD aiwplain1.jpg /opt/aiwplain1.jpg
 ADD ocr1.py /opt/ocr1.py
@@ -52,6 +49,12 @@ RUN apk update && \
 		openblas-dev openblas gfortran \
 		tesseract-ocr tesseract-ocr-dev leptonica leptonica-dev
 
+# using CLang for build 
+# https://github.com/Itseez/opencv/issues/5004
+ENV CC /usr/bin/clang
+ENV CXX /usr/bin/clang++
+
+
 RUN cd /opt/ && \
 	git clone -b ${OPENCV_VERSION} --depth 1 https://github.com/Itseez/opencv.git && \
 	git clone -b ${OPENCV_VERSION} --depth 1 https://github.com/Itseez/opencv_contrib.git
@@ -68,7 +71,7 @@ RUN mkdir -p /opt/opencv/build && \
 	make -j${CPUCOUNT} && \
 	make install && \
 	ldconfig
-	
+
 # now clean up the unwanted source to keep image size to a minimum
 # RUN cd /opt && \
 # 	rm -rf /opt/opencv && \
